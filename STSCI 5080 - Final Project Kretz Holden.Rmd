@@ -1,0 +1,72 @@
+---
+title: "STSCI5080: Group Project -- Chaperters 9, 11, & 12"
+author: "Jeff Holden & Will Kretz"
+date: "12/1/2017"
+output:
+  html_document:
+    theme: readable
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# setwd("/Class/STSCI 5080/")
+```
+
+### Question 1: Dataset Diamondas
+
+Read the data 
+
+```{r diamonds_load}
+data <- read.table("diamonds2.txt", header=T)
+attach(data)
+```
+
+#### 1. Preliminary Data analysis
+
+```{r diamonds_prelim}
+summary(data)
+boxplot(X.carat)
+boxplot(price)
+```
+
+#### 2. (a) Give a 99% confidence interval for the average diamond price.
+
+```{r diamonds_two_a_ci}
+t.test(price, conf.level=0.99)
+qqnorm(price);qqline(price) 
+
+```
+#### 2. (b) Is the average diamond price significantly (at the 1% level) different from 4800?
+
+```{r diamonds_2b_ci }
+# Not sure about the results for this
+t.test(price, mu=4800, conf.level=0.99)
+
+```
+
+#### 3. Consider the variable carat. Diamonds are considered to be of good quality if the carat weight is above 0.60. Is the average carat weight of the diamonds significantly (at the 5% level) larger than 0.60?
+
+```{r diamonds_three }
+t.test(X.carat, mu=0.60, alternative="greater", conf.level=0.95)
+
+```
+Yes. The p-value is 0.02563. Therefore, we do not reject the hypothesis that the mean value of the carat weight is abot 0.6.
+
+#### 4. Is the proportion of certificates provided by institute “GIA” significantly (at the 5% level) different from 1/3?
+
+```{r diamonds_four}
+gia_cert <- 1*(cert=="GIA")
+t.test(gia_cert, mu=1/3, conf.level=1-0.05)
+```
+
+Yes. We reject the hypothesis that the true mean is equal to 1/3 at the 5% because the p-value is ~0
+
+#### 5. Are the average weights of the diamonds certified by the three agencies significantly (at the 5% level) different from each other? If so, test, with joint 95% confidence level, which pairs are significantly different.
+
+```{r diamonds_five}
+# GIA to HRD
+# GIA to IGI
+# HRD to IGI
+# Is this anova?
+```
+
