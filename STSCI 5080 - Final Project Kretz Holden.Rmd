@@ -9,10 +9,11 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
 # setwd("/Class/STSCI 5080/")
 ```
 
-### Question 1: Dataset Diamondas
+### Question 1: Dataset Diamonds
 
 Read the data 
 
@@ -67,6 +68,51 @@ Yes. We reject the hypothesis that the true mean is equal to 1/3 at the 5% becau
 # GIA to HRD
 # GIA to IGI
 # HRD to IGI
-# Is this anova?
+cGIA <- X.carat[cert=="GIA"]
+cIGI <- X.carat[cert=="IGI"]
+cHRD <- X.carat[cert=="HRD"]
+mean(cGIA)
+mean(cHRD)
+mean()
+t.test(cGIA,cIGI, alternative="two.sided", conf.level=0.95)
+
+t.test(cGIA,cHRD, alternative="two.sided", conf.level=0.95)
+
+t.test(cIGI,cHRD, alternative="two.sided", conf.level=0.95)
+```
+
+We reject the null hypohtesis that the means are the same between all three.
+
+
+### Question 2: Dataset Powernap
+
+```{r powernap_load}
+powernap <- read.table("powernap.txt", header=T)
+attach(powernap)
+```
+
+Was there a difference between 2015 and 2016
+
+```{r powernap_comp}
+qqnorm(num2015-num2016); qqline(num2015-num2016)
+summary(powernap)
+t.test(num2015, num2016, alternative="two.sided", conf.level=0.95, paired=T) # comment on choice paired=T
+
+```
+
+### Question 3: Dataset set Supermarket
+
+Load the supermarket data
+```{r supermarket_load}
+supermarket <- read.table("supermarket.txt", header=T)
+attach(supermarket)
+```
+
+1. Start by performing a preliminary data analysis.
+
+
+```{r}
+summary(supermarket)
+hist(price1)
 ```
 
