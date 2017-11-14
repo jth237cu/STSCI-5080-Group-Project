@@ -9,7 +9,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(ggplot2)
+library(ggplot2);library(reshape2)
 # setwd("/Class/STSCI 5080/")
 ```
 
@@ -18,14 +18,14 @@ library(ggplot2)
 Read the data 
 
 ```{r diamonds_load}
-data <- read.table("diamonds2.txt", header=T)
-attach(data)
+diamonds <- read.table("diamonds2.txt", header=T)
+attach(diamonds)
 ```
 
 #### 1. Preliminary Data analysis
 
 ```{r diamonds_prelim}
-summary(data)
+summary(diamonds)
 boxplot(X.carat)
 boxplot(price)
 ```
@@ -72,8 +72,8 @@ cGIA <- X.carat[cert=="GIA"]
 cIGI <- X.carat[cert=="IGI"]
 cHRD <- X.carat[cert=="HRD"]
 mean(cGIA)
+mean(cIGI)
 mean(cHRD)
-mean()
 t.test(cGIA,cIGI, alternative="two.sided", conf.level=0.95)
 
 t.test(cGIA,cHRD, alternative="two.sided", conf.level=0.95)
@@ -98,6 +98,8 @@ qqnorm(num2015-num2016); qqline(num2015-num2016)
 summary(powernap)
 t.test(num2015, num2016, alternative="two.sided", conf.level=0.95, paired=T) # comment on choice paired=T
 
+# ADD A VARIANCE TABLE HERE
+
 ```
 
 ### Question 3: Dataset set Supermarket
@@ -114,5 +116,9 @@ attach(supermarket)
 ```{r}
 summary(supermarket)
 hist(price1)
+super_plot <- ggplot(supermarket, aes(y=freq, x=price)) + geom_bar(stat="identity", position="dodge") + labs(title = "Supermarket Prelim Analysis", subtitle="for n=10, p=0.95 & λ=9.5")
+
+# Analysis of variance table here?
 ```
+
 
