@@ -18,14 +18,14 @@ library(ggplot2);library(reshape2)
 Read the data 
 
 ```{r diamonds_load}
-diamonds <- read.table("diamonds2.txt", header=T)
-attach(diamonds)
+diamonds2 <- read.table("diamonds2.txt", header=T)
+attach(diamonds2)
 ```
 
 #### 1. Preliminary Data analysis
 
 ```{r diamonds_prelim}
-summary(diamonds)
+summary(diamonds2)
 boxplot(X.carat)
 boxplot(price)
 ```
@@ -65,20 +65,16 @@ Yes. We reject the hypothesis that the true mean is equal to 1/3 at the 5% becau
 #### 5. Are the average weights of the diamonds certified by the three agencies significantly (at the 5% level) different from each other? If so, test, with joint 95% confidence level, which pairs are significantly different.
 
 ```{r diamonds_five}
-# GIA to HRD
-# GIA to IGI
-# HRD to IGI
-cGIA <- X.carat[cert=="GIA"]
-cIGI <- X.carat[cert=="IGI"]
-cHRD <- X.carat[cert=="HRD"]
-mean(cGIA)
-mean(cIGI)
-mean(cHRD)
-t.test(cGIA,cIGI, alternative="two.sided", conf.level=0.95)
-
-t.test(cGIA,cHRD, alternative="two.sided", conf.level=0.95)
-
-t.test(cIGI,cHRD, alternative="two.sided", conf.level=0.95)
+fill <- "#4271AE"
+line <- "#1F3552"
+pcert <- ggplot(diamonds2, aes(x = cert, y = X.carat)) +
+        geom_boxplot(fill = fill, colour = line, alpha = 0.7,
+                     outlier.colour = "#1F3552", outlier.shape = 20) +
+        scale_y_continuous(name = "Mean carat weight by cert")+
+        scale_x_discrete(name = "Cert.") +
+        ggtitle("Boxplot of mean carat weight by certification")
+pcert <- pcert + theme_bw()
+pcert
 ```
 
 We reject the null hypohtesis that the means are the same between all three.
