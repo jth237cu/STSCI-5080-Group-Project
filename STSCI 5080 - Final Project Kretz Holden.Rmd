@@ -111,13 +111,47 @@ attach(supermarket)
 
 ```{r}
 summary(supermarket)
-hist(price1)
-supedr_plot <- ggplot(supermarket, aes(y=freq, x=price)) + geom_bar(stat="identity", position="dodge") + labs(title = "Supermarket Prelim Analysis", subtitle="for n=10, p=0.95 & λ=9.5")
 
-# Analysis of variance table here?
-super_dt_melt <- melt(supermarket, id.vars = c('display'))
+
+
+super_dt_melt <- melt(supermarket, id = c("display"), variable = c("sales"))
+colnames(super_dt_melt) <- c("promotion", "price.reduction", "sales")
+super_dt_melt$promotion <- factor(super_dt_melt$promotion)
+
 attach(super_dt_melt)
-boxplot(value~display*variable)
+# JH - FIX X LABELS
+super_dt_melt
+boxplot(sales~promotion*price.reduction)
 ```
 
+```{r super_market}
+interaction.plot(promotion,price.reduction,sales, main="Intearction for Supermarket Soda Sales")
 
+```
+There is very little interaction between the price reduction and promotion. There is a main effect from the promotion and a main effect from the price reduction.
+
+```{r}
+promo_aov <- aov(sales~promotion+price.reduction+promotion*price.reduction)
+summary(promo_aov)
+```
+We cannot reject the null, thus there was no significant interaction.
+
+Q3.3
+
+```{r supermarket_three}
+promo2_aov <- aov(sales~promotion+price.reduction)
+summary(promo2_aov)
+str(super_dt_melt)
+TukeyHSD(promo2_aov, which="promotion")
+plot(TukeyHSD(promo2_aov, which="promotion"))
+```
+
+Q3.3
+
+```{r supermarket_three}
+promo2_aov <- aov(sales~promotion+price.reduction)
+summary(promo2_aov)
+str(super_dt_melt)
+TukeyHSD(promo2_aov, which="price.reduction")
+plot(TukeyHSD(promo2_aov, which="price.reduction"))
+```
