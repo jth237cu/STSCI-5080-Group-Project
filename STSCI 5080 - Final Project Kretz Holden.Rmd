@@ -106,8 +106,9 @@ Was there a difference between 2015 and 2016
 
 ```{r powernap_comp}
 qqnorm(num2015-num2016); qqline(num2015-num2016)
-summary(powernap)
-t.test(num2015, num2016, alternative="two.sided", conf.level=0.95, paired=T) # comment on choice paired=T
+summary(powernap)# THIS SHOULD BE A DIFFERENCE?
+t.test(num2016, num2015, alternative="less", conf.level=0.95, paired=T) # comment on choice paired=T
+
 
 # ADD A VARIANCE TABLE HERE
 
@@ -161,12 +162,14 @@ TukeyHSD(promo2_aov, which="promotion")
 plot(TukeyHSD(promo2_aov, which="promotion"))
 ```
 
-Q3.3
+Q3.4
 
-```{r supermarket_three}
+```{r supermarket_four}
 promo2_aov <- aov(sales~promotion+price.reduction)
 summary(promo2_aov)
 str(super_dt_melt)
 TukeyHSD(promo2_aov, which="price.reduction")
 plot(TukeyHSD(promo2_aov, which="price.reduction"))
 ```
+
+
