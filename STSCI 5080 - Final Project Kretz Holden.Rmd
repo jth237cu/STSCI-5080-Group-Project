@@ -136,8 +136,6 @@ This dataset provide information on the number of units of soft drinks sold in a
 Before starting the analysis, we cleaned the data and rearragned our data into a more useful format utilizing the melt function in R. This reorganized our data so that the promotion display was placed in the first column, the price reduction in the second column, and the sales in the third and final column. With our restructured data, we performed preliminary analysis, shown below. Qualitatively looking at the numbers, it appears that price 3 resulted with the most sales, but with two factors involved (promotion and price reduction), it is difficult to gain insight based soley on one of those factors.
 ```{r}
 summary(supermarket)
-hist(price1)
-supedr_plot <- ggplot(supermarket, aes(y=freq, x=price)) + geom_bar(stat="identity", position="dodge") + labs(title = "Supermarket Prelim Analysis", subtitle="for n=10, p=0.95 & λ=9.5")
 
 
 
@@ -155,9 +153,6 @@ supedr_plot <- ggplot(supermarket, aes(y=freq, x=price)) + geom_bar(stat="identi
 
 # Analysis of variance table here?
 super_dt_melt <- melt(supermarket, id.vars = c('display'))
-attach(super_dt_melt)
-boxplot(value~display*variable)
->>>>>>> Melt data and add box plot
 ```
 Q3.2:
 
@@ -173,6 +168,14 @@ interaction.plot(promotion,price.reduction,sales, main="Intearction for Supermar
 ```
 There is very little interaction between the price reduction and promotion. There is a main effect from the promotion and a main effect from the price reduction.
 
+=======
+```{r super_market}
+interaction.plot(promotion,price.reduction,sales, main="Intearction for Supermarket Soda Sales")
+
+```
+There is very little interaction between the price reduction and promotion. There is a main effect from the promotion and a main effect from the price reduction.
+
+>>>>>>> Add interaction plots and aov
 ```{r}
 promo_aov <- aov(sales~promotion+price.reduction+promotion*price.reduction)
 summary(promo_aov)
@@ -231,3 +234,6 @@ csat_aov <- aov(csat_data$`Customer feedback`~csat_data$Role+csat_data$`Frequenc
 summary(csat_aov)
 ```
 As to why the interaction is not significant even though the interaction plot clearly shows an intersection, it coulb be because the employee level of role never takes on values for Frequency of Use that include Never nor Weekly. Without this additional data it could be hard to show. Additionally, anova analysis requires serval assumption including errors that are independent and nomrally distributed with a common variance. There is no way to check this, that we currently know of, so it is possible that the assumption does not hold up for this particular data set because this is real data. 
+=======
+```
+>>>>>>> Add interaction plots and aov
