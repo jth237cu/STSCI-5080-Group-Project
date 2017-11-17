@@ -99,6 +99,21 @@ pcert <- pcert + theme_bw()
 pcert
 ```
 
+```{r diamonds_five}
+ # GIA to HRD
+ # GIA to IGI
+ # HRD to IGI
+ cGIA <- X.carat[cert=="GIA"]
+ cIGI <- X.carat[cert=="IGI"]
+ cHRD <- X.carat[cert=="HRD"]
+ mean(cGIA)
+ mean(cIGI)
+ mean(cHRD)
+ t.test(cGIA,cIGI, alternative="two.sided", conf.level=0.95)
+ t.test(cGIA,cHRD, alternative="two.sided", conf.level=0.95)
+ t.test(cIGI,cHRD, alternative="two.sided", conf.level=0.95)
+```
+
 We reject the null hypohtesis that the means are the same between all three.
 
 
