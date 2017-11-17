@@ -112,9 +112,12 @@ attach(supermarket)
 ```{r}
 summary(supermarket)
 hist(price1)
-super_plot <- ggplot(supermarket, aes(y=freq, x=price)) + geom_bar(stat="identity", position="dodge") + labs(title = "Supermarket Prelim Analysis", subtitle="for n=10, p=0.95 & λ=9.5")
+supedr_plot <- ggplot(supermarket, aes(y=freq, x=price)) + geom_bar(stat="identity", position="dodge") + labs(title = "Supermarket Prelim Analysis", subtitle="for n=10, p=0.95 & λ=9.5")
 
 # Analysis of variance table here?
+super_dt_melt <- melt(supermarket, id.vars = c('display'))
+attach(super_dt_melt)
+boxplot(value~display*variable)
 ```
 
 
