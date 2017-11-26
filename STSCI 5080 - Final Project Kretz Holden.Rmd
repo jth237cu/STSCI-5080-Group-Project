@@ -108,8 +108,11 @@ We reject the null hypohtesis that the means are the same between all three.
 powernap <- read.table("powernap.txt", header=T)
 attach(powernap)
 ```
+In this dataset, we look at a study done on 10 telephone operators at a call center. We want to know whether or not the complaints received from customers decreased in 2016 when compared to 2015 due to a new powernap policy. The new policy was enacted at the start of 2016 and thus we want to compare the two years and see if the number of complaints in 2016 is significantly less than the number of complaints in 2015. Our data set is summaried in the tables below. There are observations of 10 operators in both 2015 and 2016. The average number of complaints was 7.6 in 2015 and 3.7 in 2016. To determine whether these means are different, a t test is employed.
 
-Was there a difference between 2015 and 2016
+Before the t test can be used, the normalized population assumption must first be tested. Below we have used a normal qq plot, as was done in previous problems. Our qq plot shows that our dataset follows the assumption well enough for the t test to work. The t test will look at the difference between the means. The null hypothesis is that the means have a difference of 0, and the alternative hypothesis that their difference is not equal to 0. Thus, we are looking for a 95% confidence interval for the difference between our means and in particular, we are interested if 0 is included in that interval.
+
+Since we are comparing means of 10 operators in 2 different years, we want to used a paired t test (and hence we include paired=T in our R code). This results with change in the number of complaints of -3.9 from the year 2015 to 2016, with a 95% confidence interval having an upper bound of -1.4. Since the upper bound is less than 0, 0 is not included in the confidence interval so there was a statistically significant decline in complaints after the powernap policy was put in place. This is reflected with the t statistic of -2.8639 and corresponding p value of 0.009331. Since the p value is less than 5%, we can reject the null hypothsis and say the difference in means is statistically significant. Therefore, on average there were significantly less complaints in 2016 compared to 2015.
 
 ```{r powernap_comp}
 qqnorm(num2015-num2016); qqline(num2015-num2016)
