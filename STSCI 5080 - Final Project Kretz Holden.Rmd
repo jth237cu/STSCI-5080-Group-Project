@@ -131,8 +131,9 @@ supermarket <- read.table("supermarket.txt", header=T)
 attach(supermarket)
 ```
 
-1. Start by performing a preliminary data analysis.
+This dataset provide information on the number of units of soft drinks sold in a US supermarket. The data provides information on which price reduction was taking place when the drinks were sold as well as which promotion was used to promote the soft drinks. Thus we consider promotion factors Display ranging from 1 to 3 and price reductions labeled as 'price1', 'price2', and 'price3'.
 
+Before starting the analysis, we cleaned the data and rearragned our data into a more useful format utilizing the melt function in R. This reorganized our data so that the promotion display was placed in the first column, the price reduction in the second column, and the sales in the third and final column. With our restructured data, we performed preliminary analysis, shown below. Qualitatively looking at the numbers, it appears that price 3 resulted with the most sales, but with two factors involved (promotion and price reduction), it is difficult to gain insight based soley on one of those factors.
 
 ```{r}
 summary(supermarket)
