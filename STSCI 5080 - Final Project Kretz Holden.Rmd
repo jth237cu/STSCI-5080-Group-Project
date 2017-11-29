@@ -1,8 +1,17 @@
+---		
+title: "STSCI5080: Group Project -- Chaperters 9, 11, & 12"		
+author: "Jeff Holden & Will Kretz"		
+date: "12/1/2017"		
+output:		
+  html_document:		
+    theme: readable		
+---
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2);library(reshape2)
-# setwd("/Class/STSCI 5080/")
+setwd("~/OneDrive - Agilent Technologies/Class/STSCI 5080/FinalProject/")
 ```
 
 ### Question 1: Dataset Diamonds
