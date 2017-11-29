@@ -20,15 +20,14 @@ Read the data
 
 ```{r diamonds_load}
 diamonds2 <- read.table("diamonds2.txt", header=T)
-attach(diamonds2)
 ```
 
 #### 1. Preliminary Data analysis
 
 ```{r diamonds_prelim}
 summary(diamonds2)
-boxplot(X.carat)
-boxplot(price)
+boxplot(diamonds2$X.carat)
+boxplot(diamonds2$price)
 ```
 
 #### 2. (a) Give a 99% confidence interval for the average diamond price.
@@ -40,49 +39,48 @@ We are looking for the average price of a diamond within a 99% confidence interv
 Our t test results with a test statistic (t value) of 25.886 and a corresponding p value of 2.2 x 10^-16. This p value is extremely small and much smaller than 0.01, or 1%. This corresponds to a mean of 5019.484 with a confidence interval of (4516.880,5522.088). Thus  with 99 percent confidence, the mean of a diamond's price is between (4516.880,5522.088) Within that interval, we cannot reject the null that the the corresponding values are the same as the average, but outside of the interval we reject the null and say that the values are statistically different than the calculated mean.
 
 ```{r diamonds_two_a_ci}
-t.test(price, conf.level=0.99)
-qqnorm(price);qqline(price) 
+t.test(diamonds2$price, conf.level=0.99)
+qqnorm(diamonds2$price);qqline(diamonds2$price) 
 
 ```
 #### 2. (b) Is the average diamond price significantly (at the 1% level) different from 4800?
 
 Here we perfom a similar test. We already showed that our data values can be assumed to be normal so we will again use the t test to see if the price is significantly different from 4800. We showed above that our 99% confidence interval for the average diamond price was a range of (4516.880,5522.088). 4800 falls in that range so we should see that the price is not significantly different than 4800. We perform the same two sided t test because I want to see if our price mean is significantly larger or significantly smaller than 4800. We again use a 99% confidence interval because we want to show significance at the 1% level. For this t test our null hypothesis is that the calculated mean and 4800 are not significantly different. The null hypothesis is that the two values are different.
-\
+
 We get a corresponding t statistic of 1.1319 which corresponds to a pvalue of 0.2586. For this comparison, our pvalue is larger than 1% so we cannot reject our null hypothesis. Thus we say that our calculated mean adn 4800 are significantly the same with 99% confidence, which matches our prediction from the confidence interval calculated above. 
 
 ```{r diamonds_2b_ci }
 # Not sure about the results for this
-t.test(price, mu=4800, conf.level=0.99)
+t.test(diamonds2$price, mu=4800, conf.level=0.99)
 
 ```
 
 #### 3. Consider the variable carat. Diamonds are considered to be of good quality if the carat weight is above 0.60. Is the average carat weight of the diamonds significantly (at the 5% level) larger than 0.60?
 
 Here we wish to look at the variable carat. We want to know if the average carat weight of the diamonds is significantly larger than 0.60 with 95% confidence. We can use the t statistic again, but we must show that the values of carat follow the assumption that they come from a distribution that is approximately normal. We use a normal qq plot to show this.
-\
+
 Our qq plot shows that the distribution is close enough to be considered normally distributed. We can then proceed with using t tests to run our statistical comparison. We are looking at whether our average is greater than 0.60 so we wat to use a one-sided t test. Our null hypothesis is that the average carat weight of diamonds is not statistically greater than 0.60. The alternative hypothesis is that the average weight of diamonds is greater than 0.60. The test results with the test statistic of 1.957. At a 5% level, a t score of close to 2 or larger usually corresponds to a statistical difference and our pvalue of 0.02563 confirms that it is close enough to 2. Because the pvalue is less than 5%, we can reject the null and say that with 95% certainty the average carat weight of the diamonds is greater than 0.60.
 
 ```{r diamonds_three }
-qqnorm(X.carat);qqline(X.carat) 
-t.test(X.carat, mu=0.60, alternative="greater", conf.level=0.95)
-
+qqnorm(diamonds2$X.carat);qqline(diamonds2$X.carat) 
+t.test(diamonds2$X.carat, mu=0.60, alternative="greater", conf.level=0.95)
 ```
 
 #### 4. Is the proportion of certificates provided by institute “GIA” significantly (at the 5% level) different from 1/3?
 
 Here we are looking the proporiton of certificates of our diamonds and we wish to compare the proption of GIA certificates to the value of 1/3. Since proportions are just averages, we can use similar analysis to what we have already done with the other variables and employ the t test. We first convert our catgeorical variable to a binary variable by giving a value of 1 to observations that have certificates from GIA and a value of 0 otherwise. When our t test is run, it calculates the mean which is the same as the proportion of values that are GIA certified. We want to compare the calculated mean to a value of 1/3 and since the value can be larger or smaller than 1/3, we want to use a two sided test. Our null hypothesis for the t test is that the calculated proportion is not statistically different than 1/3 and the alternative hypothesis is that the proportion and 1/3 are different.
-\
+
 The calculated proporiton of certificates provided by GIA is 0.4902597. The t test resulted with the test statistics of 5.5002, which corresponds to a p value of 8 x 10^-8. The p value is much smaller than 5%, so we can reject the null with 95% certainty. We can then conclude that at the 5 % level, the proportion of certicates provided by GIA is different than 1/3.
 
 ```{r diamonds_four}
-gia_cert <- 1*(cert=="GIA")
+gia_cert <- 1*(diamonds2$cert=="GIA")
 t.test(gia_cert, mu=1/3, conf.level=1-0.05)
 ```
 
 #### 5. Are the average weights of the diamonds certified by the three agencies significantly (at the 5% level) different from each other? If so, test, with joint 95% confidence level, which pairs are significantly different.
 
 Finally, we want to analyze the difference between diamonds based on which agencies certified them. Because we are dividing our samples into 3 subgroups, with each one corresponding to a different agency, we need to rely on analysis of variance. This requires different assumptions than what the t test requires. Using analysis of variance relies on the data of the 3 agencies having independent errors, having errors that are normally distributed around 0, and having a constant variance of sigma^2. We assume these are true for our data and move forward with our analysis. The null hypothesis is that differenes in the means of weights from the different agencies are 0, which means that the means of the diamond weights are the means are the same for each agency. The alternative hypothesis is that at least one difference of means from two different agencies is 0. This means that at least 2 agencies have different average weights.
-\
+
 We visualize the results of the anova analysis by plotting a tukey plot. It shows the 95% confidence intervals for average difference of  the weights of the different agencies. If any of the differences do not overlap with 0, then we can reject the null hypothesis. In our example, none of the agencies show differences that include 0 in their 95% confidence interval. Thus we can reject the null hypothsis and say that they are all statistically different at a 5% level.
 
 ```{r diamonds_five}
@@ -98,13 +96,13 @@ pcert <- pcert + theme_bw()
 pcert
 ```
 
-```{r diamonds_five}
+```{r diamonds_five_alt}
  # GIA to HRD
  # GIA to IGI
  # HRD to IGI
- cGIA <- X.carat[cert=="GIA"]
- cIGI <- X.carat[cert=="IGI"]
- cHRD <- X.carat[cert=="HRD"]
+ cGIA <- diamonds2$X.carat[diamonds2$cert=="GIA"]
+ cIGI <- diamonds2$X.carat[diamonds2$cert=="IGI"]
+ cHRD <- diamonds2$X.carat[diamonds2$cert=="HRD"]
  mean(cGIA)
  mean(cIGI)
  mean(cHRD)
@@ -121,7 +119,7 @@ pcert
  # This matches the boxplot intuitively to me.   #
  #################################################
  
-diamond_aov <- aov(X.carat~cert)
+diamond_aov <- aov(diamonds2$X.carat~diamonds2$cert)
 plot(TukeyHSD(diamond_aov))
  
 ```
@@ -133,7 +131,6 @@ We reject the null hypohtesis that the means are the same between all three.
 
 ```{r powernap_load}
 powernap <- read.table("powernap.txt", header=T)
-attach(powernap)
 ```
 In this dataset, we look at a study done on 10 telephone operators at a call center. We want to know whether or not the complaints received from customers decreased in 2016 when compared to 2015 due to a new powernap policy. The new policy was enacted at the start of 2016 and thus we want to compare the two years and see if the number of complaints in 2016 is significantly less than the number of complaints in 2015. Our data set is summaried in the tables below. There are observations of 10 operators in both 2015 and 2016. The average number of complaints was 7.6 in 2015 and 3.7 in 2016. To determine whether these means are different, a t test is employed.
 
@@ -142,9 +139,9 @@ Before the t test can be used, the normalized population assumption must first b
 Since we are comparing means of 10 operators in 2 different years, we want to used a paired t test (and hence we include paired=T in our R code). This results with change in the number of complaints of -3.9 from the year 2015 to 2016, with a 95% confidence interval having an upper bound of -1.4. Since the upper bound is less than 0, 0 is not included in the confidence interval so there was a statistically significant decline in complaints after the powernap policy was put in place. This is reflected with the t statistic of -2.8639 and corresponding p value of 0.009331. Since the p value is less than 5%, we can reject the null hypothsis and say the difference in means is statistically significant. Therefore, on average there were significantly less complaints in 2016 compared to 2015.
 
 ```{r powernap_comp}
-qqnorm(num2015-num2016); qqline(num2015-num2016)
+qqnorm(powernap$num2015-powernap$num2016); qqline(powernap$num2015-powernap$num2016)
 summary(powernap)# THIS SHOULD BE A DIFFERENCE?
-t.test(num2016, num2015, alternative="less", conf.level=0.95, paired=T) # comment on choice paired=T
+t.test(powernap$num2016, powernap$num2015, alternative="less", conf.level=0.95, paired=T) # comment on choice paired=T
 
 
 # ADD A VARIANCE TABLE HERE
@@ -156,7 +153,6 @@ t.test(num2016, num2015, alternative="less", conf.level=0.95, paired=T) # commen
 Load the supermarket data
 ```{r supermarket_load}
 supermarket <- read.table("supermarket.txt", header=T)
-attach(supermarket)
 ```
 
 This dataset provide information on the number of units of soft drinks sold in a US supermarket. The data provides information on which price reduction was taking place when the drinks were sold as well as which promotion was used to promote the soft drinks. Thus we consider promotion factors Display ranging from 1 to 3 and price reductions labeled as 'price1', 'price2', and 'price3'.
@@ -191,13 +187,13 @@ We can confirm our results quantitatively using an anova analysis while includin
 For this test, we start with the null hypothesis that the interaction term of our model has no significance. Our alternative hypothesis is that is an interaction. The analysis resulted with a F score of 0.952 and a corresponding p value of 0.457. This pvalue is larger than 5%, thus we cannot reject the null hypothesis. Therefore, we conclude that there is no significant interaction effect at the 5% level.
 
 ```{r super_market}
-interaction.plot(promotion,price.reduction,sales, main="Intearction for Supermarket Soda Sales")
+interaction.plot(super_dt_melt$promotion,super_dt_melt$price.reduction,super_dt_melt$sales, main="Intearction for Supermarket Soda Sales")
 
 ```
 There is very little interaction between the price reduction and promotion. There is a main effect from the promotion and a main effect from the price reduction.
 
 ```{r}
-promo_aov <- aov(sales~promotion+price.reduction+promotion*price.reduction)
+promo_aov <- aov(super_dt_melt$sales~super_dt_melt$promotion+super_dt_melt$price.reduction+super_dt_melt$promotion*super_dt_melt$price.reduction)
 summary(promo_aov)
 ```
 We cannot reject the null, thus there was no significant interaction.
@@ -205,48 +201,47 @@ We cannot reject the null, thus there was no significant interaction.
 Q3.3
 
 ```{r supermarket_three}
-promo2_aov <- aov(sales~promotion+price.reduction)
+promo2_aov <- aov(super_dt_melt$sales~super_dt_melt$promotion+super_dt_melt$price.reduction)
 summary(promo2_aov)
-str(super_dt_melt)
-TukeyHSD(promo2_aov, which="promotion")
-plot(TukeyHSD(promo2_aov, which="promotion"))
+TukeyHSD(promo2_aov, which="super_dt_melt$promotion")
+plot(TukeyHSD(promo2_aov, which="super_dt_melt$promotion"))
 ```
 
 Q3.4
 
 ```{r supermarket_four}
-promo2_aov <- aov(sales~promotion+price.reduction)
+promo2_aov <- aov(super_dt_melt$sales~super_dt_melt$promotion+super_dt_melt$price.reduction)
 summary(promo2_aov)
 str(super_dt_melt)
-TukeyHSD(promo2_aov, which="price.reduction")
-plot(TukeyHSD(promo2_aov, which="price.reduction"))
+TukeyHSD(promo2_aov, which="super_dt_melt$price.reduction")
+plot(TukeyHSD(promo2_aov, which="super_dt_melt$price.reduction"))
 ```
 
 Q4.
 
 ```{r csat_load_data}
-csat_data <- read_csv("C:/Users/kretz/OneDrive/Documents/Homework_MPS Fall 2017/5080_Probability/Final_Project/csat_data.csv")
+csat_data <- read.table("../csat_data.csv", header=T, sep=",")
 ############################################
 # Need to explain what the data represents #
 ############################################
 summary(csat_data)
-boxplot(csat_data$`Customer feedback`)
-boxplot(csat_data$Year)
+boxplot(csat_data$Customer.feedback~csat_data$Year)
+
 
 ```
 To being analyzing the customer survery data, we start with an anova analysis to see which, if any, values contributed significantly to the customer satisfaction scores. In this analysis, for a given parameter, the null hypothesis is that it does not contribute to the customer satisfaction, while the alternative hypothsis is that they do play a significant role in determining the customer satisfaction score. The result showed that Role and Frequency of Use produced large F values of 4.786 and 6.519, respectively. This corresponded to pvalues of 0.00842 and 3.23 x 10^-5, respectively. Both of these p values are less than 5% so we can reject the null hypothesis and say that they contributed significantly to the model. The other parameter, Year, produced an F value of 0.726 with a corresponding pvalue of 0.39429. Because this value is larger than 5%, we cannot reject the null hypothesis at the 5% level and thus cannot say it contributes significantly to modeling the customer satisfaction.
 ```{r}
-csat_aov <- aov(csat_data$`Customer feedback`~csat_data$Year+csat_data$Role+csat_data$`Frequency of Use`)
+csat_aov <- aov(csat_data$Customer.feedback~csat_data$Year+csat_data$Role+csat_data$Frequency.of.Use)
 summary(csat_aov)
 ```
  Moving forward, we will now analyze the data without including Year, as it has no significance. With the remaining 2 parameters, we now wish to account for any interaction between the two. We can do this qualitatively with an interaction plot, shown below. Obviously, the plot shows a nonlinear relationship between the three levels of Role. Thus, we say there is interaction between role and Frequency of Use.
 
 ```{r}
-interaction.plot(csat_data$`Frequency of Use`,csat_data$Role,csat_data$`Customer feedback`, main="Intearction for Frequency of Use and Role")
+interaction.plot(csat_data$Frequency.of.Use,csat_data$Role,csat_data$Customer.feedback, main="Intearction for Frequency of Use and Role")
 ```
 To account for this interaction quantitatively, we revisit the anova analysis done previously. This time we include an interaction term for the two parameters and remove Year, since it was previously determined not to be a significant main effect. The anova analysis shows that the interaction term is not significant at the 5% level because it produces a somewhat smaller F value of 1.618 with a corresponding p value of 0.12546. Thus we cannot reject the null hypothesis and cannot say that the interaction is significant.
 ```{r}
-csat_aov <- aov(csat_data$`Customer feedback`~csat_data$Role+csat_data$`Frequency of Use`+csat_data$Role*csat_data$`Frequency of Use`)
+csat_aov <- aov(csat_data$Customer.feedback ~csat_data$Role+csat_data$Frequency.of.Use+csat_data$Role*csat_data$Frequency.of.Use)
 summary(csat_aov)
 ```
 As to why the interaction is not significant even though the interaction plot clearly shows an intersection, it coulb be because the employee level of role never takes on values for Frequency of Use that include Never nor Weekly. Without this additional data it could be hard to show. Additionally, anova analysis requires serval assumption including errors that are independent and nomrally distributed with a common variance. There is no way to check this, that we currently know of, so it is possible that the assumption does not hold up for this particular data set because this is real data. 
