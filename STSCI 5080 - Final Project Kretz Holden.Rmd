@@ -161,22 +161,16 @@ Before starting the analysis, we cleaned the data and rearragned our data into a
 ```{r}
 summary(supermarket)
 
-
-
 super_dt_melt <- melt(supermarket, id = c("display"), variable = c("sales"))
 colnames(super_dt_melt) <- c("promotion", "price.reduction", "sales")
 super_dt_melt$promotion <- factor(super_dt_melt$promotion)
 
-attach(super_dt_melt)
 # JH - FIX X LABELS
 super_dt_melt
-boxplot(sales~promotion*price.reduction)
-=======
-hist(price1)
-supedr_plot <- ggplot(supermarket, aes(y=freq, x=price)) + geom_bar(stat="identity", position="dodge") + labs(title = "Supermarket Prelim Analysis", subtitle="for n=10, p=0.95 & λ=9.5")
+superdr_plot <- ggplot(super_dt_melt, aes(y=sales, x=promotion, fill=price.reduction)) + geom_boxplot() + labs(title = "Supermarket Prelim Analysis", subtitle="supermarket.txt")
 
 # Analysis of variance table here?
-super_dt_melt <- melt(supermarket, id.vars = c('display'))
+####super_dt_melt <- melt(supermarket, id.vars = c('display'))
 ```
 Q3.2:
 
