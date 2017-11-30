@@ -26,8 +26,13 @@ diamonds2 <- read.table("diamonds2.txt", header=T)
 
 ```{r diamonds_prelim}
 summary(diamonds2)
-boxplot(diamonds2$X.carat)
-boxplot(diamonds2$price)
+
+diamond_melt <- melt(diamonds2) #Make it possible to do a faceted boxplot
+diamond_plot <- ggplot(diamond_melt, aes(x=variable,y=value))  + 
+  geom_boxplot(fill = alpha("#1F3552", .6)) + 
+  facet_wrap(~ variable, scales="free", labeller = as_labeller(c(price = "Price (USD)", X.carat = "Weight (carat)") ) )  +  
+  ylab(NULL)
+diamond_plot + theme_bw()
 ```
 
 #### 2. (a) Give a 99% confidence interval for the average diamond price.
