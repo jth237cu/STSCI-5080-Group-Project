@@ -221,7 +221,7 @@ Frequency of Use - Daily, Weekly, Less than monthly, more than weekly,
 ```{r csat_load_data}
 csat_data <- read.table("../csat_data.csv", header=T, sep=",")
 summary(csat_data)
-csatbox_plot <- ggplot(csat_data, aes(y=Customer.feedback, x=Role, fill= Year)) + geom_boxplot() + labs(title = "Customer Satisfaction Survey", subtitle="N=2617")
+csatbox_plot <- ggplot(csat_data, aes(y=Customer.feedback, x=Role, fill= as.factor(Year))) + geom_boxplot() + labs(title = "Customer Satisfaction Survey", subtitle="N=2617")
 csatbox_plot
 ```
 To begin analyzing the customer survery data, we start with an anova analysis to see which, if any, values contributed significantly to the customer satisfaction scores. In this analysis, for a given parameter, the null hypothesis is that it does not contribute to the customer satisfaction, while the alternative hypothsis is that they do play a significant role in determining the customer satisfaction score. The result showed that Role and Frequency of Use produced large F values of 4.786 and 6.519, respectively. This corresponded to pvalues of 0.00842 and 3.23 x 10^-5, respectively. Both of these p values are less than 5% so we can reject the null hypothesis and say that they contributed significantly to the model. The other parameter, Year, produced an F value of 0.726 with a corresponding pvalue of 0.39429. Because this value is larger than 5%, we cannot reject the null hypothesis at the 5% level and thus cannot say it contributes significantly to modeling the customer satisfaction.
