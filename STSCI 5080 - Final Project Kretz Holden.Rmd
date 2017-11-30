@@ -157,7 +157,7 @@ supermarket <- read.table("supermarket.txt", header=T)
 
 This dataset provide information on the number of units of soft drinks sold in a US supermarket. The data provides information on which price reduction was taking place when the drinks were sold as well as which promotion was used to promote the soft drinks. Thus we consider promotion factors Display ranging from 1 to 3 and price reductions labeled as 'price1', 'price2', and 'price3'.
 
-Before starting the analysis, we cleaned the data and rearragned our data into a more useful format utilizing the melt function in R. This reorganized our data so that the promotion display was placed in the first column, the price reduction in the second column, and the sales in the third and final column. With our restructured data, we performed preliminary analysis, shown below. Qualitatively looking at the numbers, it appears that price 3 resulted with the most sales, but with two factors involved (promotion and price reduction), it is difficult to gain insight based soley on one of those factors.
+Before starting the analysis, we cleaned the data and rearragned our data into a more useful format utilizing the melt function in reshape package for R. This reorganized our data so that the promotion display was placed in the first column, the price reduction in the second column, and the sales in the third and final column. With our restructured data, we performed preliminary analysis, shown below. Qualitatively looking at the numbers, it appears that price 3 resulted with the most sales, but with two factors involved (promotion and price reduction), it is difficult to gain insight based soley on one of those factors.
 ```{r}
 summary(supermarket)
 
@@ -165,10 +165,8 @@ super_dt_melt <- melt(supermarket, id = c("display"), variable = c("sales"))
 colnames(super_dt_melt) <- c("promotion", "price.reduction", "sales")
 super_dt_melt$promotion <- factor(super_dt_melt$promotion)
 
-# JH - FIX X LABELS
-super_dt_melt
 superdr_plot <- ggplot(super_dt_melt, aes(y=sales, x=promotion, fill=price.reduction)) + geom_boxplot() + labs(title = "Supermarket Prelim Analysis", subtitle="supermarket.txt")
-
+superdr_plot
 # Analysis of variance table here?
 ####super_dt_melt <- melt(supermarket, id.vars = c('display'))
 ```
@@ -211,34 +209,38 @@ TukeyHSD(promo2_aov, which="super_dt_melt$price.reduction")
 plot(TukeyHSD(promo2_aov, which="super_dt_melt$price.reduction"))
 ```
 
-Q4.
+Q4. Companies frequently measure their customer's satisfaction with a product or service. This feedback can be used to identify and fix problems and understand customer needs. In 2016 and 2017, a company asked users on a scale of 0 to 10 for their product "How likely is it that you would recommend this product to a friend or colleague?" Respondents were assigned one of four roles and they were asked to self-assess how frequently they use a product. Finally, the users of the software were assigned one of three roles.
+
+
+Year - year of response
+Role - Role of the respondent using the software: manager, employee, customer
+Customer.feedback - Response to "How likely is it that you would recommend this product..."
+Frequency of Use - Daily, Weekly, Less than monthly, more than weekly, 
+
 
 ```{r csat_load_data}
 csat_data <- read.table("../csat_data.csv", header=T, sep=",")
-############################################
-# Need to explain what the data represents #
-############################################
 summary(csat_data)
-boxplot(csat_data$Customer.feedback~csat_data$Year)
-
-
+csatbox_plot <- ggplot(csat_data, aes(y=Customer.feedback, x=Role, fill= Year)) + geom_boxplot() + labs(title = "Customer Satisfaction Survey", subtitle="N=2617")
+csatbox_plot
 ```
-To being analyzing the customer survery data, we start with an anova analysis to see which, if any, values contributed significantly to the customer satisfaction scores. In this analysis, for a given parameter, the null hypothesis is that it does not contribute to the customer satisfaction, while the alternative hypothsis is that they do play a significant role in determining the customer satisfaction score. The result showed that Role and Frequency of Use produced large F values of 4.786 and 6.519, respectively. This corresponded to pvalues of 0.00842 and 3.23 x 10^-5, respectively. Both of these p values are less than 5% so we can reject the null hypothesis and say that they contributed significantly to the model. The other parameter, Year, produced an F value of 0.726 with a corresponding pvalue of 0.39429. Because this value is larger than 5%, we cannot reject the null hypothesis at the 5% level and thus cannot say it contributes significantly to modeling the customer satisfaction.
+To begin analyzing the customer survery data, we start with an anova analysis to see which, if any, values contributed significantly to the customer satisfaction scores. In this analysis, for a given parameter, the null hypothesis is that it does not contribute to the customer satisfaction, while the alternative hypothsis is that they do play a significant role in determining the customer satisfaction score. The result showed that Role and Frequency of Use produced large F values of 4.786 and 6.519, respectively. This corresponded to pvalues of 0.00842 and 3.23 x 10^-5, respectively. Both of these p values are less than 5% so we can reject the null hypothesis and say that they contributed significantly to the model. The other parameter, Year, produced an F value of 0.726 with a corresponding pvalue of 0.39429. Because this value is larger than 5%, we cannot reject the null hypothesis at the 5% level and thus cannot say it contributes significantly to modeling the customer satisfaction.
 ```{r}
 csat_aov <- aov(csat_data$Customer.feedback~csat_data$Year+csat_data$Role+csat_data$Frequency.of.Use)
 summary(csat_aov)
 ```
- Moving forward, we will now analyze the data without including Year, as it has no significance. With the remaining 2 parameters, we now wish to account for any interaction between the two. We can do this qualitatively with an interaction plot, shown below. Obviously, the plot shows a nonlinear relationship between the three levels of Role. Thus, we say there is interaction between role and Frequency of Use.
+Moving forward, we will now analyze the data without including Year, as it has no significance. With the remaining 2 parameters, we now wish to account for any interaction between the two. We can do this qualitatively with an interaction plot, shown below. Obviously, the plot shows a nonlinear relationship between the three levels of Role. Thus, we say there is interaction between role and Frequency of Use.
 
 ```{r}
 interaction.plot(csat_data$Frequency.of.Use,csat_data$Role,csat_data$Customer.feedback, main="Intearction for Frequency of Use and Role")
 ```
 To account for this interaction quantitatively, we revisit the anova analysis done previously. This time we include an interaction term for the two parameters and remove Year, since it was previously determined not to be a significant main effect. The anova analysis shows that the interaction term is not significant at the 5% level because it produces a somewhat smaller F value of 1.618 with a corresponding p value of 0.12546. Thus we cannot reject the null hypothesis and cannot say that the interaction is significant.
+
 ```{r}
 csat_aov <- aov(csat_data$Customer.feedback ~csat_data$Role+csat_data$Frequency.of.Use+csat_data$Role*csat_data$Frequency.of.Use)
 summary(csat_aov)
 ```
+
 As to why the interaction is not significant even though the interaction plot clearly shows an intersection, it coulb be because the employee level of role never takes on values for Frequency of Use that include Never nor Weekly. Without this additional data it could be hard to show. Additionally, anova analysis requires serval assumption including errors that are independent and nomrally distributed with a common variance. There is no way to check this, that we currently know of, so it is possible that the assumption does not hold up for this particular data set because this is real data. 
-=======
-```
->>>>>>> Add interaction plots and aov
+
+Add interaction plots and aov
